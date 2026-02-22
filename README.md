@@ -134,3 +134,15 @@ We'll start with the 2 "feature" CSS additions.
 
 ### **You can find the CSS for all of these changes in [BottomOfCSSInserts.css](https://github.com/Lucridius/Hard-Stuck-Trainee-s-Yomitan-Settings/blob/main/BottomOfCSSInserts.css)**
 or alternatively I've uploaded my entire CSS File [My_Entire_CSS_Not_Recommended.css](https://github.com/Lucridius/Hard-Stuck-Trainee-s-Yomitan-Settings/blob/main/My_Entire_CSS_Not_Recommended.css)
+
+# Update post notes.
+**I recommend using [Senren](https://github.com/BrenoAqua/Senren), thanks to a new soon to be out feature.**
+  - Get extra info on non jitendex entries for free 
+  - Ramble video explaining/demonstrating.
+
+<img width="1619" height="162" alt="image" src="https://github.com/user-attachments/assets/43acae9a-504e-47c3-a119-77cd445c02b1" />
+
+
+https://github.com/user-attachments/assets/d0970d6c-255e-4ce3-a557-347963704fc9
+
+
