@@ -1135,21 +1135,6 @@ html[data-glossary-layout-mode="compact"] {
 
 
 /* Collapsed Dictionaries Start*/
-.definition-item[data-dictionary='Jitendex.org [2025-09-01]'] {
-    --collapsible-definition-line-count: 2.5;
-}
-.definition-item[data-dictionary='新和英'] {
-    --collapsible-definition-line-count: 0.2;
-}
-.definition-item[data-dictionary='用例.jp'] {
-    --collapsible-definition-line-count: 1.4;
-}
-.definition-item[data-dictionary='絵でわかる日本語'] {
-    --collapsible-definition-line-count: 1.4;
-}
-.definition-item[data-dictionary='語彙力・熟語の百科事典'] {
-    --collapsible-definition-line-count: 1.4;
-}
 .definition-item[data-dictionary='JMdict Forms [2026-01-14]'] {
     --collapsible-definition-line-count: 1.32;
 }
@@ -1264,5 +1249,6 @@ span.frequency-group-tag:has(span[data-display-value="Owner"]) {
     --tag-color: #F8DBA6;
 }
 /* MOE Rank Tag Colours End*/
+
 
 
