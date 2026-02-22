@@ -25,14 +25,18 @@ As I mentioned,
 - with these handlebars alone you can't send Selected Text to the selected text anki field.
 - if you're using the bolding feature and it fails you just get a defaulted dictionary, and no selected text **at all**
 ## My addition(s)
+
 I've added 2 handle bars (chatgpt) 
 ### ``{conditional-selection-text}``
+
 Being seperated from ``{primary-definition}`` gives us back the freedom to use a ``{popup-selection-text}`` style handlebar.
 - If matched text matches a dictionary name **Nothing** will happen.
 - If highlighted text is anything else, will output it to the field.
   - The main advantage here for me is you can continue to use the bolding defintion match feature, but you also will always get selection text even if the bolding match fails.
   - I'm just OCD braind and want to use the selection text field.
+  
 ###``conditional-dictionary-name}``###
+
 This is really just an OCD feature you can feel free to delete (I imagine pretty much noone will use it)
 - If matched text is a dictionary name, will output it.
 - If ``{primary-definition}`` correctly matches bolding text highlight, will output that dictionaries name.
