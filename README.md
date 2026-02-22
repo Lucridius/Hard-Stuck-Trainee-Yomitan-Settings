@@ -68,4 +68,7 @@ Using a one button setup
 https://github.com/user-attachments/assets/5b444bb0-4a9d-48f2-b13d-00394b7afe10
 
 # CSS
+The main bulk of the CSS comes from *again* [AuroraWright](https://gist.github.com/AuroraWright) (see their release of the CSS [here](https://gist.github.com/AuroraWright/563a67c18b8a74ecde3653b7726ff632))
+  - *but from them it's just someone else's edited CSS... and that came from someone else yada yada*
 
+## Changes step by step
