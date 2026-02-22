@@ -42,14 +42,22 @@ This is really just an OCD feature you can feel free to delete (I imagine pretty
 
 ## Handle Bar Installation.
 Open/download the file ``Modified_JPMNHandles`` and copy the top portion of the file at the top of your handle bars and the bottom portion at the bottom.
-The handle bars I added are at the very end look for ``{{! START OF {conditional-selection-text} HANDLEBAR  }}`` and or ``{{! START OF {conditional-dictionary-name} HANDLEBAR  }}`` and delete them if you want :shrug:
+
+<img width="1070" height="351" alt="image" src="https://github.com/user-attachments/assets/d25863e1-121e-437b-a19f-a30ed0c2e173" />
+
+
+The handle bars I added are at the very end look for ``{{! START OF {conditional-selection-text} HANDLEBAR  }}`` and or ``{{! START OF {conditional-dictionary-name} HANDLEBAR  }}`` and delete them if you want.
 ## Yomitan Config (anki)
-- Have your selection text field or equivalent be {conditional-selection-text}
+- Have your selection text field or equivalent be ``{conditional-selection-text}``
 - Have the main definition be ``{primary-definition}``
 - For glossary it's your choice on however you want to set that up
 - (senren) Have dictionaryPreference be ``{conditional-dictionary-name}``
   - You can add this field to any notetype if you want to for some reason.
-**Have all of these set to ``overwrite if available``
+**Have all of these set to ``overwrite if available`` (well maybe not glossary actually)
+
+<img width="1236" height="166" alt="image" src="https://github.com/user-attachments/assets/ec67106a-f4e4-423b-b95e-ad8aae1f8fa3" />
+
+
 ## Quick installation/Useage demonstration
 https://github.com/user-attachments/assets/5b444bb0-4a9d-48f2-b13d-00394b7afe10
 
