@@ -1,0 +1,484 @@
+{{~! ================ Dictionary Categorization Options ================= ~}}
+
+{{~! valid values: "bilingual", "monolingual" ~}}
+{{~set "opt-first-definition-type" "monolingual" ~}}
+
+{{~!
+    A bunch of JP and CN bilingual dictionaries covered by default,
+    including: JMdict, 新和英, CEDICT, etc
+~}}
+{{~#set "bilingual-dict-regex"~}} ^(([Jj][Mm][Dd]ict)(.*)|(.*)和英(.*)|日本語文法辞典\(全集\)|どんなときどう使う(.*)|毎日のんびり日本語教師|Bunpro Dictionary|Onomatoproject|Jitendex(.*))$ {{~/set~}}
+{{~#set "ignored-dict-regex"~}} ^(全市区町村辞典(.*)|ポケモン図鑑|TMW Club v2|数え方辞典オンライン|ウェブ検索|用例\.jp|JMdict Forms \[2026-01-14\])$ {{~/set~}}
+
+{{~! ====================== Selected Text Options ======================= ~}}
+
+{{~! main toggle for all text selection features ~}}
+{{set "opt-selection-text-enabled"               true}}
+{{~! if selected text matches a dictionary name, use that dictionary ~}}
+{{set "opt-selection-text-dictionary"            true}}
+{{~! use selected text directly instead of a dictionary if all else fails ~}}
+{{set "opt-selection-text-glossary"              false}}
+{{~! try to find selected text in all dictionaries, if found use that dictionary + make selection bold ~}}
+{{set "opt-selection-text-glossary-attempt-bold" true}}
+
+{{~! ===================== Default Handlebars Start ===================== ~}}
+
+
+    ---> YOUR HANDLE BARS GOP HERE, DO NOT KEEP THIS TEXT, <---
+
+
+{{~! ====================== Default Handlebars End ====================== ~}}
+
+{{~! categorizes into 3 types: "ignored", "bilingual", or "monolingual" ~}}
+{{~#*inline "_get-dict-type"~}}
+
+    {{~#scope~}}
+        {{~#set "rx-match-ignored" ~}}
+            {{~#regexMatch (get "ignored-dict-regex") "gu"~}}{{dictionaryName}}{{~/regexMatch~}}
+        {{/set~}}
+        {{~#set "rx-match-bilingual" ~}}
+            {{~#regexMatch (get "bilingual-dict-regex") "gu"~}}{{dictionaryName}}{{~/regexMatch~}}
+        {{/set~}}
+
+
+        {{~#if (op "!==" (get "rx-match-ignored") "")~}}
+            ignored
+        {{~else if (op "!==" (get "rx-match-bilingual") "")~}}
+            bilingual
+        {{~else~}}
+            {{~! assumed that anything else is a monolingual dictionary ~}}
+            monolingual
+        {{~/if~}}
+
+    {{~/scope~}}
+
+{{~/inline~}}
+
+{{~! returns "" if selection text is disabled, or if none existed in the first place ~}}
+{{~#*inline "_selection-text"~}}
+    {{~! text-mode != "" and text-mode > 0 ~}}
+    {{~#if (op "===" (get "opt-selection-text-enabled") true)~}}
+        {{~! removes leading and trailing whitespace ~}}
+        {{~#regexReplace "^\s+|\s+$" "" "g"~}}
+            {{~#getMedia "popupSelectionText"}}{{/getMedia~}}
+        {{~/regexReplace~}}
+    {{~/if~}}
+{{~/inline~}}
+
+{{~! checks that the selection text is indeed a dictionary (returns the text if true, nothing if false) ~}}
+{{~#*inline "_check-dictionary"~}}
+    {{~#scope~}}
+        {{~#set "selection-is-dictionary" false}}{{/set~}}
+
+        {{~! removes linebreak from selection ~}}
+        {{~#set "cleaned-selection"}}
+            {{~#regexReplace "&lt;br&gt;" "" "g"~}}{{get "selection"}}{{~/regexReplace~}}
+        {{/set~}}
+
+        {{~#each definition.definitions~}}
+            {{~#if (op "===" (get "cleaned-selection") dictionary)~}}
+                {{~#set "selection-is-dictionary" true ~}}{{~/set~}}
+            {{~/if~}}
+        {{~/each~}}
+
+        {{~#if (op "===" (get "selection-is-dictionary") true)~}}
+            {{~get "cleaned-selection"~}}
+        {{~else~}}
+            {{~! null ~}}
+        {{~/if~}}
+    {{~/scope~}}
+{{~/inline~}}
+
+{{~!
+    Gives the raw glossary as the search string
+    (for searching to see if the selected text is a part of a dictionary)
+
+    Remember: we should NOT use glossary-single because it preprocesses the text!
+    If the selected text was on the first line and the first line is removed,
+    then using glossary-single will fail to find the selected text!
+~}}
+{{#*inline "_glossary-single-search"}}
+
+    {{~#scope~}}
+        {{~#each glossary}}{{formatGlossary ../dictionary .}}{{#unless @last}} | {{/unless}}{{/each~}}
+    {{~/scope~}}
+
+{{/inline}}
+
+{{~#*inline "_get-dict-if-glossary-selected"~}}
+    {{~#scope~}}
+        {{~#set "result-dictionary" null}}{{/set~}}
+        {{~#set "search-selection"}}{{~#regexReplace "[.*+?^${}()|[\]\\]" "\$&" "g"~}}{{~> _selection-text ~}}{{~/regexReplace~}}{{/set~}}
+
+        {{~#each definition.definitions~}}
+            {{~#set "search-def"}}{{~> _glossary-single-search . ~}}{{/set~}}
+
+            {{~#set "search-regex-match"}}
+                {{~#regexMatch (get "search-selection") "gu"}}{{~get "search-def"~}}{{/regexMatch~}}
+            {{/set~}}
+            {{~#if (op "&&"
+                (op "===" (get "result-dictionary") null)
+                (op "!==" (get "search-regex-match") "")
+            )~}}
+                {{~#set "result-dictionary" dictionary}}{{/set~}}
+            {{~/if~}}
+
+        {{~/each~}}
+        {{~get "result-dictionary" ~}}
+    {{~/scope~}}
+{{~/inline~}}
+
+{{~!
+    searches dictionary, determined by `opt-first-definition-type`
+    - (opt-first-definition-type === bilingual) -> bilingual dictionaries are searched first
+    - (opt-first-definition-type === monolingual) -> monolingual dictionaries are searched first
+~}}
+{{~#*inline "_search-primary-definition-dict"~}}
+    {{~#scope~}}
+        {{~#if (op "===" (get "opt-first-definition-type") "bilingual")~}}
+            {{~#set "first-definition-search-type-1" "bilingual"}}{{/set~}}
+            {{~#set "first-definition-search-type-2" "monolingual"}}{{/set~}}
+        {{~else~}}
+            {{~#set "first-definition-search-type-1" "monolingual"}}{{/set~}}
+            {{~#set "first-definition-search-type-2" "bilingual"}}{{/set~}}
+        {{~/if~}}
+
+
+        {{~! first-dictionary === null <=> no valid dictionary was found ~}}
+        {{~#set "first-dictionary" null}}{{/set~}}
+
+        {{~#each definition.definitions~}}
+
+            {{~#set "test-dict-name"}}{{~> _get-dict-type . dictionaryName=dictionary ~}}{{/set~}}
+            {{~#if (op "===" (get "test-dict-name") (get "first-definition-search-type-1"))~}}
+                {{~#if (op "===" null (get "first-dictionary"))~}}
+                    {{~#set "first-dictionary" dictionary~}}{{~/set~}}
+                {{~/if~}}
+            {{~/if~}}
+
+        {{~/each~}}
+
+
+        {{~! uses other dictionary type, last resort ~}}
+        {{~#if (op "===" (get "first-dictionary") null)~}}
+
+            {{~#each definition.definitions~}}
+
+                {{~#set "test-dict-name"}}{{~> _get-dict-type . dictionaryName=dictionary ~}}{{/set~}}
+                {{~#if (op "===" (get "test-dict-name") (get "first-definition-search-type-2"))~}}
+                    {{~#if (op "===" null (get "first-dictionary"))~}}
+                        {{~#set "first-dictionary" dictionary~}}{{~/set~}}
+                    {{~/if~}}
+                {{~/if~}}
+
+            {{~/each~}}
+
+        {{~/if~}}
+
+        {{~#get "first-dictionary"~}}{{~/get~}}
+    {{~/scope~}}
+{{~/inline~}}
+
+{{~!
+    searches dictionary, determined by `opt-first-definition-type`
+    - (opt-first-definition-type === bilingual) -> monolingual dictionaries are searched first
+    - (opt-first-definition-type === monolingual) -> bilingual dictionaries are searched first
+~}}
+{{~#*inline "_search-secondary-definition-dict"~}}
+    {{~#scope~}}
+        {{~#if (op "===" (get "opt-first-definition-type") "bilingual")~}}
+            {{~#set "first-definition-search-type" "monolingual"}}{{/set~}}
+        {{~else~}}
+            {{~#set "first-definition-search-type" "bilingual"}}{{/set~}}
+        {{~/if~}}
+
+        {{~#set "primary-dictionary"}}{{~> _get-primary-definition-dict . ~}}{{/set~}}
+
+        {{~! first-dictionary === null <=> no valid dictionary was found ~}}
+        {{~#set "first-dictionary" null}}{{/set~}}
+
+        {{~#each definition.definitions~}}
+
+            {{~#set "test-dict-name"}}{{~> _get-dict-type . dictionaryName=dictionary ~}}{{/set~}}
+
+            {{~#if (op "&&"
+                (op "===" (get "test-dict-name") (get "first-definition-search-type"))
+                (op "!==" (get "primary-dictionary") dictionary)
+            ) ~}}
+                {{~#if (op "===" null (get "first-dictionary"))~}}
+                    {{~#set "first-dictionary" dictionary~}}{{~/set~}}
+                {{~/if~}}
+            {{~/if~}}
+
+        {{~/each~}}
+
+        {{~#get "first-dictionary"~}}{{~/get~}}
+    {{~/scope~}}
+{{~/inline~}}
+
+{{~!
+    if (selection-text exists):
+        if (selection-text is exactly a dictionary):
+            return dictionary
+        if (able to detect dictionary of which the selection-text is highlighting):
+            return dictionary
+        return null
+~}}
+{{~#*inline "_check-dictionary-and-glossary"~}}
+    {{~#scope~}}
+
+        {{~#set "result" ""}}{{/set~}}
+
+        {{~! checks if the selected text matches a dictionary ~}}
+        {{~#if (op "===" (get "opt-selection-text-dictionary") true)~}}
+            {{~#set "result"}}{{~> _check-dictionary . ~}}{{/set~}}
+        {{~/if~}}
+
+        {{~! checks if the selected text matches a definition in a dictionary ~}}
+        {{~#if
+            (op "&&"
+                (op "===" (get "result") "")
+                (op "===" (get "opt-selection-text-glossary-attempt-bold") true)
+            )
+        ~}}
+            {{~#set "result"}}{{~> _get-dict-if-glossary-selected . ~}}{{/set~}}
+        {{~/if~}}
+
+        {{~get "result" ~}}
+
+    {{~/scope~}}
+{{~/inline~}}
+
+{{~!
+    if (selection-text exists):
+        if (selection-text is exactly a dictionary):
+            return null
+        if (able to detect dictionary of which the selection-text is highlighting):
+            return "uses-glossary"
+        return null
+~}}
+{{~#*inline "_selection-uses-glossary"~}}
+    {{~#scope~}}
+
+        {{~#set "result" ""}}{{/set~}}
+
+        {{~! checks if the selected text matches a dictionary ~}}
+        {{~#if (op "===" (get "opt-selection-text-dictionary") true)~}}
+            {{~#set "result"}}{{~> _check-dictionary . ~}}{{/set~}}
+        {{~/if~}}
+
+        {{~! checks if the selected text matches a definition in a dictionary ~}}
+        {{~#if (op "!==" (get "result") "") ~}}
+            {{~! selection-text is a dictionary -> null ~}}
+        {{~else if (op "===" (get "opt-selection-text-glossary-attempt-bold") true)~}}
+            {{~#set "result"}}{{~> _get-dict-if-glossary-selected . ~}}{{/set~}}
+            {{~#if (op "!==" (get "result") "") ~}}
+                {{~! selection-text dict found -> "uses-glossary" ~}}
+                uses-glossary
+            {{~/if~}}
+        {{~/if~}}
+
+    {{~/scope~}}
+{{~/inline~}}
+
+{{~!
+    if (selection-text exists):
+        if (selection-text is exactly a dictionary):
+            return dictionary
+        if (able to detect dictionary of which the selection-text is highlighting):
+            return dictionary
+        if (selection-text-glossary is not enabled):
+            return first-dictionary (determined by `opt-first-definition-type`)
+        return null
+
+    else:
+        return first-dictionary (determined by `opt-first-definition-type`)
+~}}
+{{~#*inline "_get-primary-definition-dict"~}}
+    {{~#scope~}}
+
+        {{~! first checks selection text ~}}
+        {{~#set "selection"}}{{~> _selection-text ~}}{{/set~}}
+        {{~#if (op "!==" (get "selection") "")~}}
+
+            {{~#set "result"}}{{~> _check-dictionary-and-glossary . ~}}{{/set~}}
+
+            {{~! doesn't return a dictionary if opt-selection-text-glossary is false b/c ~}}
+            {{~#if
+                (op "&&"
+                    (op "===" (get "result") "")
+                    (op "===" (get "opt-selection-text-glossary") false)
+                )
+            ~}}
+                {{~#set "result"}}{{~> _search-primary-definition-dict . ~}}{{/set~}}
+            {{~/if~}}
+
+            {{~get "result" ~}}
+
+        {{~! no selection text ~}}
+        {{~else~}}
+            {{~> _search-primary-definition-dict . ~}}
+        {{~/if~}}
+
+    {{~/scope~}}
+
+{{~/inline~}}
+
+{{~! primary def: first monolingual (or first bilingual if no monolingual dicts found) ~}}
+{{~! does the reverse if opt-first-definition-type is "bilingual" ~}}
+{{~#*inline "primary-definition"~}}
+
+    {{~#scope~}}
+        {{~#set "primary-dictionary"}}{{~> _get-primary-definition-dict . ~}}{{/set~}}
+
+        {{~#if (op "===" (get "primary-dictionary") "")~}}
+            {{~> _selection-text ~}}
+        {{~else~}}
+            {{~#set "selection"}}{{~> _selection-text ~}}{{/set~}}
+            {{~#set "selection-uses-glossary"~}}
+                {{~> _selection-uses-glossary . ~}}
+            {{~/set~}}
+
+            {{~! not "" <=> is a filled string, i.e. selection uses glossary ~}}
+            {{~#if (op "!==" (get "selection-uses-glossary") "")~}}
+
+                {{~! escape regex ~}}
+                {{~#set "search-selection"}}{{~#regexReplace "[.*+?^${}()|[\]\\]" "\$&" "g"~}}{{~> _selection-text ~}}{{~/regexReplace~}}{{/set~}}
+                {{~#set "search-selection-bold"}}<b>{{~> _selection-text ~}}</b>{{/set~}}
+
+                {{~#regexReplace (get "search-selection") (get "search-selection-bold") "g"~}}
+                    {{~#if plain~}}
+                        {{~> glossary-plain selectedDictionary=(get "primary-dictionary") noDictionaryTag=noDictionaryTag ~}}
+                    {{~else~}}
+                        {{~> glossary selectedDictionary=(get "primary-dictionary") brief=brief noDictionaryTag=noDictionaryTag ~}}
+                    {{~/if~}}
+                {{~/regexReplace~}}
+
+            {{~else~}}
+                {{~#if plain~}}
+                    {{~> glossary-plain selectedDictionary=(get "primary-dictionary") noDictionaryTag=noDictionaryTag ~}}
+                {{~else~}}
+                    {{~> glossary selectedDictionary=(get "primary-dictionary") brief=brief noDictionaryTag=noDictionaryTag ~}}
+                {{~/if~}}
+            {{~/if~}}
+
+        {{~/if~}}
+
+    {{~/scope~}}
+
+{{~/inline~}}
+
+{{~! secondary def: first bilingual ~}}
+{{~! does the reverse if opt-first-definition-type is "bilingual" ~}}
+{{~#*inline "secondary-definition"~}}
+
+    {{~#scope~}}
+        {{~#set "secondary-dictionary"}}{{~> _search-secondary-definition-dict . ~}}{{/set~}}
+
+        {{~#if (op "!==" (get "secondary-dictionary") "")~}}
+            {{~#if plain~}}
+                {{~> glossary-plain selectedDictionary=(get "secondary-dictionary") noDictionaryTag=noDictionaryTag ~}}
+            {{~else~}}
+                {{~> glossary selectedDictionary=(get "secondary-dictionary") brief=brief noDictionaryTag=noDictionaryTag ~}}
+            {{~/if~}}
+        {{~/if~}}
+
+    {{~/scope~}}
+
+{{~/inline~}}
+
+{{#*inline "primary-definition-no-dictionary"}}
+    {{~> primary-definition noDictionaryTag=true}}
+{{/inline}}
+
+{{#*inline "primary-definition-brief"}}
+    {{~> primary-definition brief=true}}
+{{/inline}}
+
+{{#*inline "primary-definition-plain"}}
+    {{~> primary-definition plain=true}}
+{{/inline}}
+
+{{#*inline "primary-definition-plain-no-dictionary"}}
+    {{~> primary-definition plain=true noDictionaryTag=true}}
+{{/inline}}
+
+{{#*inline "secondary-definition-no-dictionary"}}
+    {{~> secondary-definition noDictionaryTag=true}}
+{{/inline}}
+
+{{#*inline "secondary-definition-brief"}}
+    {{~> secondary-definition brief=true}}
+{{/inline}}
+
+{{#*inline "secondary-definition-plain"}}
+    {{~> secondary-definition plain=true}}
+{{/inline}}
+
+{{#*inline "secondary-definition-plain-no-dictionary"}}
+    {{~> secondary-definition plain=true noDictionaryTag=true}}
+{{/inline}}
+
+{{#*inline "pitch-accent-first-graph"}}
+    {{~#scope~}}
+        {{~#with pitches.[0]~}}
+            {{~#each pitches~}}
+                {{~> pitch-accent-item-disambiguation~}}
+                {{~> pitch-accent-item format='graph'~}}
+            {{~/each~}}
+        {{~/with~}}
+    {{~/scope~}}
+{{/inline}}
+
+
+
+
+{{! Additional Handlebar(s) }}
+
+{{! START OF {conditional-selection-text} HANDLEBAR  }}
+{{~#*inline "conditional-selection-text"~}}
+    {{~#set "selection"}}{{~> _selection-text ~}}{{~/set~}}
+
+    {{~#if (op "!==" (get "selection") "")}}
+        {{~#set "is-dictionary"}}{{~> _check-dictionary . ~}}{{~/set~}}
+
+        {{~#if (op "===" (get "is-dictionary") "")}}
+            {{~! Highlighted text is NOT a dictionary → output it like popup-selection-text ~}}
+            {{~#if (hasMedia "popupSelectionText")}}
+                {{{getMedia "popupSelectionText"}}}
+            {{~else~}}
+                {{~get "selection"~}}
+            {{~/if~}}
+        {{~/if}}
+    {{~/if}}
+{{~/inline~}}
+{{! END OF {conditional-selection-text} HANDLEBAR  }}
+
+
+{{! START OF {conditional-dictionary-name} HANDLEBAR  }}
+{{#*inline "conditional-dictionary-name"}}
+  {{#scope}}
+    {{~! get selected text if any ~}}
+    {{~#set "selection"}}{{> _selection-text }}{{/set~}}
+
+    {{~#if (op "!==" (get "selection") "")}}
+      {{~! check if selection matches a dictionary or glossary ~}}
+      {{~#set "dict"}}{{> _check-dictionary-and-glossary }}{{/set~}}
+
+      {{~#if (op "!==" (get "dict") "")}}
+        {{get "dict"}}
+      {{~else~}}
+        Defaulted
+      {{/if~}}
+    {{~else~}}
+      {{~! no selection text, fall back to first dictionary ~}}
+      {{~#set "dict"}}{{> _search-primary-definition-dict }}{{/set~}}
+      {{~#if (op "!==" (get "dict") "")}}
+        {{get "dict"}}
+      {{~else~}}
+        Defaulted
+      {{/if~}}
+    {{/if~}}
+  {{/scope}}
+{{/inline}}
+{{! END OF {conditional-selection-text} HANDLEBAR  }}
