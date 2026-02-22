@@ -1,0 +1,242 @@
+/* ALL OF THIS CAN GO AT THE BOTTOM OF YOUR CSS */
+
+
+/* Additional Dictionaries Colourizer Start */
+.definition-item[data-dictionary="大辞泉 第二版"] {
+  --dict-color: rgb(164, 48, 23);
+  --dict-bg-opacity: 0.04;
+}
+.definition-item[data-dictionary="ウェブ検索"] {
+  --dict-color: rgb(39, 130, 250);
+}
+.definition-item[data-dictionary="小学館例解学習国語 第十二版"] {
+  --dict-color: rgb(0, 172, 193);
+  --dict-bg-opacity: 0.05;
+}
+.definition-item[data-dictionary="三省堂 全訳読解古語辞典"] {
+  --dict-color: rgb(168, 94, 160);
+  --dict-bg-opacity: 0.04;
+}
+.definition-item[data-dictionary="旺文社 全訳古語辞典"] {
+  --dict-color: rgb(196, 232, 176);
+  --dict-bg-opacity: 0.06;
+  --tag-text-color: black;
+}
+.definition-item[data-dictionary="語彙力・熟語の百科事典"] {
+  --dict-color: rgb(255, 210, 104);
+  --dict-bg-opacity: 0.05;
+  --tag-text-color: black;
+}
+.definition-item[data-dictionary="用例.jp"] {
+  --dict-color: rgb(70, 120, 220);
+  --dict-bg-opacity: 0.035;
+}
+.definition-item[data-dictionary="擬音語・擬態語辞典"] {
+  --dict-color: rgb(255, 182, 193);
+  --dict-bg-opacity: 0.06;
+  --tag-text-color: black;
+}
+.definition-item[data-dictionary="surasura 擬声語"] {
+  --dict-color: rgb(255, 140, 105);
+  --dict-bg-opacity: 0.06;
+}
+.definition-item[data-dictionary="角川新字源 改訂新版"] {
+  --dict-color: rgb(176, 140, 92);
+  --dict-bg-opacity: 0.05;
+}
+.definition-item[data-dictionary="IMIDASの日本語辞典"] {
+  --dict-color: rgb(120, 144, 156);
+  --dict-bg-opacity: 0.05;
+}
+.definition-item[data-dictionary="ネット用語辞典「ネット王子」"] {
+  --dict-color: rgb(142, 68, 173);
+  --dict-bg-opacity: 0.05;
+}
+.definition-item[data-dictionary="[画像付き] 絵でわかる日本語"] {
+  --dict-color: rgb(207, 76, 110);
+  --dict-bg-opacity: 0.05;
+}
+.definition-item[data-dictionary="Bunpro Dictionary"] {
+  --dict-color: rgb(244, 66, 54);
+  --dict-bg-opacity: 0.05;
+}
+.definition-item[data-dictionary="TMW Club v2"] {
+  --dict-color: rgb(255, 183, 77);
+  --dict-bg-opacity: 0.06;
+  --tag-text-color: black;
+}
+.definition-item[data-dictionary="Onomatoproject"] {
+  --dict-color: rgb(255, 153, 204);
+  --dict-bg-opacity: 0.06;
+}
+.definition-item[data-dictionary="OnoMangaStrip"] {
+  --dict-color: rgb(255, 204, 153);
+  --dict-bg-opacity: 0.06;
+  --tag-text-color: black;
+}
+.definition-item[data-dictionary="Jitenon (kotowaza + yoji)"] {
+  --dict-color: rgb(255, 227, 124);
+  --dict-bg-opacity: 0.05;
+  --tag-text-color: black;
+}
+.definition-item[data-dictionary="ことわざ・慣用句の百科事典"] {
+  --dict-color: rgb(255, 214, 102);
+  --dict-bg-opacity: 0.05;
+  --tag-text-color: black;
+}
+.definition-item[data-dictionary="明鏡国語辞典 第三版"] {
+  --dict-color: rgb(135, 190, 255);
+  --dict-bg-opacity: 0.04;
+}
+/* Additional Dictionaries Colourizer End */
+
+
+/* Additional Tags Colourizer Start*/
+.frequency-group-item[data-details^="Jiten"] {
+  --tag-frequency-background-color: #2d9654;
+}
+.frequency-group-item[data-details^="VN Freq"] {
+  --tag-frequency-background-color: #ff6b3d;
+}
+.frequency-group-item[data-details="Anime & J-drama"] {
+  --tag-frequency-background-color: #ff1493;
+}
+.frequency-group-item[data-details^="JLPT_Level"] {
+  --tag-frequency-background-color: #00b894;
+}
+.frequency-group-item[data-details^="jpDicts"] {
+  --tag-frequency-background-color: #5a6cff;
+}
+/* Additional Tags Colourizer End*/
+
+
+/* Collapsed Dictionaries Start*/
+.definition-item[data-dictionary='Jitendex.org [2025-09-01]'] {
+    --collapsible-definition-line-count: 2.5;
+}
+.definition-item[data-dictionary='新和英'] {
+    --collapsible-definition-line-count: 0.2;
+}
+.definition-item[data-dictionary='用例.jp'] {
+    --collapsible-definition-line-count: 1.4;
+}
+.definition-item[data-dictionary='絵でわかる日本語'] {
+    --collapsible-definition-line-count: 1.4;
+}
+.definition-item[data-dictionary='語彙力・熟語の百科事典'] {
+    --collapsible-definition-line-count: 1.4;
+}
+.definition-item[data-dictionary='JMdict Forms [2026-01-14]'] {
+    --collapsible-definition-line-count: 1.32;
+}
+/* Collapsed Dictionaries End*/
+
+
+/* Jitendex Hide Example sentences, appear when holding click (if avaialble) Start*/
+[data-dictionary*="Jitendex"]{
+[data-sc-content="example-sentence"]{
+display: none;
+}
+.gloss-sc-li:active > div [data-sc-content="example-sentence"]{
+display: block;
+}
+}
+/* Jitendex Hide Example sentences, appear when holding click (if avaialble) End*/
+
+
+/* Jitendex links (might remove other stuff haven't checked fully) Start*/
+.gloss-sc-div[data-sc-content="attribution"] {
+    display: none !important;
+}
+/* Jitendex links (might remove other stuff haven't checked fully) End*/
+
+
+/* Hides blue bar from expansion arrow Start*/
+button.expansion-button {
+    background-color: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0;
+    margin: 0;
+    cursor: pointer; /* keeps it clickable */
+}
+/* Hides blue bar from expansion arrow End*/
+
+
+/* Moves the expansion arrow to the top Start*/
+.expansion-button-icon {
+  align-self: flex-start;  /* stick the icon to the top of the button */
+  margin-top: 0.2em;       /* optional: add a little padding from top */
+}
+/* Moves the expansion arrow to the top End*/
+
+
+/* Move ウェブ検索 and JMdict Forms [2026-01-14] to the TOP Row (ALWAYS) Start*/
+.definition-item[data-dictionary="ウェブ検索"],
+.definition-item[data-dictionary="JMdict Forms [2026-01-14]"] {
+  grid-column: 1 / -1;   /* full width by default */
+  order: -200;          /* keep them at the top */
+}
+.entry-body-section-content.definition-list:has(
+  .definition-item[data-dictionary="ウェブ検索"]
+):has(
+  .definition-item[data-dictionary="JMdict Forms [2026-01-14]"]
+)
+.definition-item[data-dictionary="ウェブ検索"],
+.entry-body-section-content.definition-list:has(
+  .definition-item[data-dictionary="ウェブ検索"]
+):has(
+  .definition-item[data-dictionary="JMdict Forms [2026-01-14]"]
+)
+.definition-item[data-dictionary="JMdict Forms [2026-01-14]"] {
+  grid-column: auto;    /* return to normal grid flow */
+}
+.definition-item[data-dictionary="ウェブ検索"] {
+  order: -200;
+}
+.definition-item[data-dictionary="JMdict Forms [2026-01-14]"] {
+  order: -199;
+}
+/* Move ウェブ検索 and JMdict Forms [2026-01-14] to the TOP Row (ALWAYS) End*/
+
+
+/* Hide デジタル大辞泉 if 大辞泉 第二版 exists (coverage) Start*/
+/* Have デジタル大辞泉 higher in your stack then 大辞泉 第二版*/
+/* Firefox users need to go to about:config and enable layout.css.has-selector.enabled
+(I'm not sure if it's enabled chat GPT said it's not)*/
+.definition-item[data-dictionary="デジタル大辞泉"]:has(~ .definition-item[data-dictionary='大辞泉 第二版']) {
+    display: none;
+}
+/* Hide デジタル大辞泉 if 大辞泉 第二版 exists (coverage) Start*/
+
+
+/* MOE Rank Tag Colours Start*/
+span.frequency-group-tag:has(span[data-display-value="Student"]) {
+    --tag-color: #994450;
+}
+span.frequency-group-tag:has(span[data-display-value="Trainee"]) {
+    --tag-color: #d85254;
+}
+span.frequency-group-tag:has(span[data-display-value="Debut Idol"]) {
+    --tag-color: #ff6a8f;
+}
+span.frequency-group-tag:has(span[data-display-value="Major Idol"]) {
+    --tag-color: #d275e1;
+}
+span.frequency-group-tag:has(span[data-display-value="Prima Idol"]) {
+    --tag-color: #876be0;
+}
+span.frequency-group-tag:has(span[data-display-value="Divine Idol"]) {
+    --tag-color: #4b54d9;
+}
+span.frequency-group-tag:has(span[data-display-value="Eternal Idol"]) {
+    --tag-color: #4188e7;
+}
+span.frequency-group-tag:has(span[data-display-value="Immortal Idol"]) {
+    --tag-color: #53D9AF;
+}
+span.frequency-group-tag:has(span[data-display-value="Owner"]) {
+    --tag-color: #F8DBA6;
+}
+/* MOE Rank Tag Colours End*/
