@@ -133,3 +133,4 @@ We'll start with the 2 "feature" CSS additions.
   - I think it needs a specific version (the latest version)
 
 ### **You can find the CSS for all of these changes in [BottomOfCSSInserts.css](https://github.com/Lucridius/Hard-Stuck-Trainee-s-Yomitan-Settings/blob/main/BottomOfCSSInserts.css)**
+or alternatively I've uploaded my entire CSS File [My_Entire_CSS_Not_Recommended.css](https://github.com/Lucridius/Hard-Stuck-Trainee-s-Yomitan-Settings/blob/main/My_Entire_CSS_Not_Recommended.css)
